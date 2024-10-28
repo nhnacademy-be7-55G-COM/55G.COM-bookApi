@@ -1,6 +1,7 @@
 package shop.S5G.bookApi.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,11 +27,11 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long bookId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "publisherId")
     private Publisher publisher;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookStatusId")
     private BookStatus bookStatus;
 

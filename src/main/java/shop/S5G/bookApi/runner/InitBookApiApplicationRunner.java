@@ -59,7 +59,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
 
     /**
      * 출판사 데이터를 파싱하여 반환
-     * <p>
+     *
      * 출판사 명칭을 파싱한 후, 조회 수행
      * 데이터베이스 내 출판사 데이터가 존재한다면 해당 데이터의 Publisher 객체를 반환하고,
      * 데이터가 존재하지 않는다면 데이터베이스에 새로 저장하여 반환
@@ -71,11 +71,10 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         Publisher publisher;
         String publisherName = (String) item.get("publisher");
         Optional<Publisher> publisherOptional = publisherRepository.findByPublisherName(
-                publisherName);
+            publisherName);
 
         if (publisherOptional.isEmpty()) {
-            publisher = publisherRepository.save(
-                    Publisher.builder().publisherName(publisherName).active(true).build());
+            publisher = publisherRepository.save(new Publisher(publisherName, true));
         } else {
             publisher = publisherOptional.get();
         }
@@ -93,22 +92,22 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
      */
     private Book getBook(JSONObject item, Publisher publisher, BookStatus bookStatus) {
         LocalDateTime pubDate = LocalDate.parse((String) item.get("pubDate"),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
 
         Book book = bookRepository.save(Book.builder()
-                .title((String) item.get("title"))
-                .publisher(publisher)
-                .description((String) item.get("description"))
-                .publishedDate(pubDate)
-                .isbn((String) item.get("isbn"))
-                .price((Long) item.get("priceStandard"))
-                .discountRate(new BigDecimal(0))
-                .isPacked(false)
-                .stock(100)
-                .views(0)
-                .bookStatus(bookStatus)
-                .createdAt(LocalDateTime.now())
-                .build()
+            .title((String) item.get("title"))
+            .publisher(publisher)
+            .description((String) item.get("description"))
+            .publishedDate(pubDate)
+            .isbn((String) item.get("isbn"))
+            .price((Long) item.get("priceStandard"))
+            .discountRate(new BigDecimal(0))
+            .isPacked(false)
+            .stock(100)
+            .views(0)
+            .bookStatus(bookStatus)
+            .createdAt(LocalDateTime.now())
+            .build()
         );
 
         return book;
@@ -139,14 +138,14 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             Author author = null;
             if (authorOptional.isEmpty()) {
                 author = authorRepository.save(
-                        Author.builder().name(authorName).active(true).build());
+                    Author.builder().name(authorName).active(true).build());
             } else {
                 author = authorOptional.get();
             }
 
             bookAuthorRepository.save(
-                    BookAuthor.builder().book(book).author(author).authorType(authorType)
-                            .build());
+                BookAuthor.builder().book(book).author(author).authorType(authorType)
+                    .build());
         }
     }
 
@@ -166,16 +165,16 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
 
             if (authorString.contains("(지은이)") || authorString.contains("(글)")) {
                 insertBookAuthor(authorNameQueue, book,
-                        authorTypeRepository.findByTypeName("AUTHOR").get());
+                    authorTypeRepository.findByTypeName("AUTHOR").get());
             } else if (authorString.contains("(엮은이)")) {
                 insertBookAuthor(authorNameQueue, book,
-                        authorTypeRepository.findByTypeName("COAUTHOR").get());
+                    authorTypeRepository.findByTypeName("COAUTHOR").get());
             } else if (authorString.contains("(옮긴이)")) {
                 insertBookAuthor(authorNameQueue, book,
-                        authorTypeRepository.findByTypeName("TRANSLATOR").get());
+                    authorTypeRepository.findByTypeName("TRANSLATOR").get());
             } else if (authorString.contains("(그림)") || authorString.contains("(삽화)")) {
                 insertBookAuthor(authorNameQueue, book,
-                        authorTypeRepository.findByTypeName("ILLUSTRATOR").get());
+                    authorTypeRepository.findByTypeName("ILLUSTRATOR").get());
             } else if (authorString.contains(" (")) {
                 authorNameQueue.clear();
             }
@@ -191,7 +190,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         authorTypeRepository.save(AuthorType.builder().typeName("COAUTHOR").active(true).build());
         authorTypeRepository.save(AuthorType.builder().typeName("TRANSLATOR").active(true).build());
         authorTypeRepository.save(
-                AuthorType.builder().typeName("ILLUSTRATOR").active(true).build());
+            AuthorType.builder().typeName("ILLUSTRATOR").active(true).build());
         authorTypeRepository.save(AuthorType.builder().typeName("SUPERVISED").active(true).build());
 
         // 도서 상태의 데이터를 사전 정의
@@ -208,7 +207,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
      */
     public void insertInitApiData() throws ParseException {
         JSONArray array = (JSONArray) ((JSONObject) new JSONParser().parse(
-                restTemplate.getForObject(API_URL, String.class))).get("item");
+            restTemplate.getForObject(API_URL, String.class))).get("item");
 
         for (Object object : array) {
             JSONObject item = (JSONObject) object;
