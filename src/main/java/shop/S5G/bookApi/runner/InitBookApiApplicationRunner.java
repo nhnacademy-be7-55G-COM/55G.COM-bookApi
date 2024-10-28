@@ -68,7 +68,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
      * @return 데이터베이스 내 데이터가 있는 Publisher 객체
      */
     private Publisher getPublisher(JSONObject item) {
-        Publisher publisher = null;
+        Publisher publisher;
         String publisherName = (String) item.get("publisher");
         Optional<Publisher> publisherOptional = publisherRepository.findByPublisherName(
                 publisherName);
@@ -160,7 +160,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         String[] authorSplit = ((String) item.get("author")).split(", ");
         Queue<String> authorNameQueue = new LinkedList<>();
 
-        AuthorType authorType = null;
+        AuthorType authorType;
         for (String authorString : authorSplit) {
             authorNameQueue.add(parseAuthorName(authorString));
 
@@ -178,7 +178,6 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
                         authorTypeRepository.findByTypeName("ILLUSTRATOR").get());
             } else if (authorString.contains(" (")) {
                 authorNameQueue.clear();
-                continue;
             }
         }
     }
@@ -211,8 +210,8 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         JSONArray array = (JSONArray) ((JSONObject) new JSONParser().parse(
                 restTemplate.getForObject(API_URL, String.class))).get("item");
 
-        for (Object o : array) {
-            JSONObject item = (JSONObject) o;
+        for (Object object : array) {
+            JSONObject item = (JSONObject) object;
             Publisher publisher = getPublisher(item);
             BookStatus bookStatus = bookStatusRepository.findByTypeName("ONSALE").get();
             Book book = getBook(item, publisher, bookStatus);
