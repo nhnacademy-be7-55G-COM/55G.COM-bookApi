@@ -179,25 +179,6 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     }
 
     /**
-     * 정적 데이터를 데이터베이스에 반영
-     */
-    public void insertInitStaticData() {
-        // 저자 타입의 데이터를 사전 정의
-        authorTypeRepository.save(AuthorType.builder().typeName("AUTHOR").active(true).build());
-        authorTypeRepository.save(AuthorType.builder().typeName("COAUTHOR").active(true).build());
-        authorTypeRepository.save(AuthorType.builder().typeName("TRANSLATOR").active(true).build());
-        authorTypeRepository.save(
-            AuthorType.builder().typeName("ILLUSTRATOR").active(true).build());
-        authorTypeRepository.save(AuthorType.builder().typeName("SUPERVISED").active(true).build());
-
-        // 도서 상태의 데이터를 사전 정의
-        bookStatusRepository.save(BookStatus.builder().typeName("ONSALE").build());
-        bookStatusRepository.save(BookStatus.builder().typeName("OUTOFPOINT").build());
-        bookStatusRepository.save(BookStatus.builder().typeName("OUTOFSTOCK").build());
-        bookStatusRepository.save(BookStatus.builder().typeName("DROP").build());
-    }
-
-    /**
      * 외부 API로부터 데이터를 받아와 데이터베이스에 저장
      *
      * @throws ParseException
@@ -225,8 +206,6 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) throws ParseException {
         restTemplate = new RestTemplate();
 
-        // 고정 데이터(저자 타입, 도서 상태 등)를 DB에 삽입
-        insertInitStaticData();
         // 외부 API에서 데이터 불러와 삽입
         insertInitApiData();
 
