@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Author {
 
     @Id
@@ -28,4 +27,14 @@ public class Author {
 
     private String name;
     private boolean active;
+
+    public Author(String name, boolean active, Profile profile) {
+        this.name = name;
+        this.active = active;
+        this.profile = profile;
+    }
+
+    public Author(String name, boolean active) {
+        this(name, active, null);
+    }
 }

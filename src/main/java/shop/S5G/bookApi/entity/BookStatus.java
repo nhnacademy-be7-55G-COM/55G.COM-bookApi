@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class BookStatus {
 
     @Id
@@ -21,4 +20,8 @@ public class BookStatus {
     private long bookStatusId;
 
     private String typeName;
+
+    public BookStatus(String typeName) {
+        this.typeName = typeName;
+    }
 }

@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Publisher {
 
     @Id
@@ -22,4 +20,9 @@ public class Publisher {
 
     private String publisherName;
     private boolean active;
+
+    public Publisher(String publisherName, boolean active) {
+        this.publisherName = publisherName;
+        this.active = active;
+    }
 }

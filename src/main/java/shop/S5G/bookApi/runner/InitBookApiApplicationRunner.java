@@ -137,15 +137,12 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
 
             Author author = null;
             if (authorOptional.isEmpty()) {
-                author = authorRepository.save(
-                    Author.builder().name(authorName).active(true).build());
+                author = authorRepository.save(new Author(authorName, true));
             } else {
                 author = authorOptional.get();
             }
 
-            bookAuthorRepository.save(
-                BookAuthor.builder().book(book).author(author).authorType(authorType)
-                    .build());
+            bookAuthorRepository.save(new BookAuthor(book, author, authorType));
         }
     }
 

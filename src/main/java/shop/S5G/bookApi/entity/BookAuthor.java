@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class BookAuthor {
 
     @Id
@@ -33,4 +32,10 @@ public class BookAuthor {
     @ManyToOne
     @JoinColumn(name = "authorId")
     private Author author;
+
+    public BookAuthor(Book book,Author author,AuthorType authorType){
+        this.book=book;
+        this.author=author;
+        this.authorType=authorType;
+    }
 }

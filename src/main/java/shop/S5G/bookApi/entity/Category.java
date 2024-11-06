@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Category {
 
     @Id
@@ -23,4 +22,14 @@ public class Category {
 
     private String categoryName;
     private boolean active;
+
+    public Category(String categoryName, boolean active, Category parentCategory) {
+        this.categoryName = categoryName;
+        this.active = active;
+        this.parentCategory = parentCategory;
+    }
+
+    public Category(String categoryName, boolean active) {
+        this(categoryName, active, null);
+    }
 }
