@@ -1,4 +1,4 @@
-package shop.S5G.bookApi.entity;
+package shop.s5g.bookApi.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

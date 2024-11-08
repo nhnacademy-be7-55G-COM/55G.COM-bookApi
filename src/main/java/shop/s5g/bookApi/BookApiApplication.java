@@ -1,4 +1,4 @@
-package shop.S5G.bookApi;
+package shop.s5g.bookApi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package shop.S5G.bookApi.exception;
+package shop.s5g.bookApi.exception;
 
 public class CategoryNotFoundException extends RuntimeException{
     public CategoryNotFoundException(){}
