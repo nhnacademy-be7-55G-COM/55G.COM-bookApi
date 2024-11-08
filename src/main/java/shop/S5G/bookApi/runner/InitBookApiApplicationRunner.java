@@ -128,7 +128,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     private Book getBook(JSONObject item, Publisher publisher, BookStatus bookStatus) {
         LocalDateTime pubDate = LocalDate.parse((String) item.get("pubDate"),
             DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
-
+        System.out.println(((String) item.get("title")).length());
         return bookRepository.save(Book.builder()
             .title((String) item.get("title"))
             .publisher(publisher)
@@ -223,7 +223,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         for (Object object : array) {
             JSONObject item = (JSONObject) object;
             Publisher publisher = getPublisher(item);
-            BookStatus bookStatus = bookStatusRepository.findByTypeName("ONSALE").get();
+            BookStatus bookStatus = bookStatusRepository.findByTypeName("ONSALE").orElse(null);
             Category category;
             try {
                 category = getCategory(item);
