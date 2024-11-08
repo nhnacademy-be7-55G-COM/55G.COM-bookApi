@@ -1,4 +1,4 @@
-package shop.S5G.bookApi.runner;
+package shop.s5g.bookApi.runner;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,16 +23,23 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import shop.S5G.bookApi.entity.Author;
-import shop.S5G.bookApi.entity.AuthorType;
-import shop.S5G.bookApi.entity.Book;
-import shop.S5G.bookApi.entity.BookAuthor;
-import shop.S5G.bookApi.entity.BookCategory;
-import shop.S5G.bookApi.entity.BookStatus;
-import shop.S5G.bookApi.entity.Category;
-import shop.S5G.bookApi.entity.Publisher;
-import shop.S5G.bookApi.exception.CategoryNotFoundException;
-import shop.S5G.bookApi.repository.*;
+import shop.s5g.bookApi.entity.Author;
+import shop.s5g.bookApi.entity.AuthorType;
+import shop.s5g.bookApi.entity.Book;
+import shop.s5g.bookApi.entity.BookAuthor;
+import shop.s5g.bookApi.entity.BookCategory;
+import shop.s5g.bookApi.entity.BookStatus;
+import shop.s5g.bookApi.entity.Category;
+import shop.s5g.bookApi.entity.Publisher;
+import shop.s5g.bookApi.exception.CategoryNotFoundException;
+import shop.s5g.bookApi.repository.AuthorRepository;
+import shop.s5g.bookApi.repository.AuthorTypeRepository;
+import shop.s5g.bookApi.repository.BookAuthorRepository;
+import shop.s5g.bookApi.repository.BookCategoryRepository;
+import shop.s5g.bookApi.repository.BookRepository;
+import shop.s5g.bookApi.repository.BookStatusRepository;
+import shop.s5g.bookApi.repository.CategoryRepository;
+import shop.s5g.bookApi.repository.PublisherRepository;
 
 /**
  * 도서와 관련된 기초 데이터를 외부 API(알라딘)에서 받아오는 클래스

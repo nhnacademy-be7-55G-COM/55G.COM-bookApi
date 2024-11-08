@@ -1,28 +1,28 @@
-package shop.S5G.bookApi.entity;
+package shop.s5g.bookApi.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Publisher {
+public class BookStatus {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long publisherId;
+    private long bookStatusId;
 
-    private String publisherName;
-    private boolean active;
+    private String typeName;
 
-    public Publisher(String publisherName, boolean active) {
-        this.publisherName = publisherName;
-        this.active = active;
+    public BookStatus(String typeName) {
+        this.typeName = typeName;
     }
 }
