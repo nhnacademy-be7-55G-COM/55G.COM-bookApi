@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 public class Profile {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long profileId;
 
     private String birth;

@@ -27,8 +27,11 @@ import shop.S5G.bookApi.entity.Author;
 import shop.S5G.bookApi.entity.AuthorType;
 import shop.S5G.bookApi.entity.Book;
 import shop.S5G.bookApi.entity.BookAuthor;
+import shop.S5G.bookApi.entity.BookCategory;
 import shop.S5G.bookApi.entity.BookStatus;
+import shop.S5G.bookApi.entity.Category;
 import shop.S5G.bookApi.entity.Publisher;
+import shop.S5G.bookApi.exception.CategoryNotFoundException;
 import shop.S5G.bookApi.repository.*;
 
 /**
@@ -54,14 +57,13 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     private final BookRepository bookRepository;
     private final BookStatusRepository bookStatusRepository;
     private final PublisherRepository publisherRepository;
+    private final CategoryRepository categoryRepository;
+    private final BookCategoryRepository bookCategoryRepository;
 
     private RestTemplate restTemplate;
 
     /**
-     * 출판사 데이터를 파싱하여 반환
-     *
-     * 출판사 명칭을 파싱한 후, 조회 수행
-     * 데이터베이스 내 출판사 데이터가 존재한다면 해당 데이터의 Publisher 객체를 반환하고,
+     * 출판사 데이터를 파싱하여 반환 출판사 명칭을 파싱한 후, 조회 수행 데이터베이스 내 출판사 데이터가 존재한다면 해당 데이터의 Publisher 객체를 반환하고,
      * 데이터가 존재하지 않는다면 데이터베이스에 새로 저장하여 반환
      *
      * @param item 한 개의 도서 데이터를 담고 있는 JSON 객체
@@ -83,6 +85,39 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     }
 
     /**
+     * 카테고리 문자열을 파싱하여 데이터베이스에서 찾아서 반환
+     *
+     * @param item 한 개의 도서 데이터를 담고 있는 JSON 객체
+     * @return 해당 도서에 맞는 Category 객체
+     * @throws CategoryNotFoundException 해당 카테고리가 존재하지 않을 경우 발생
+     */
+    private Category getCategory(JSONObject item) throws CategoryNotFoundException {
+        Category parentCategory = null;
+        int depth = 0;
+
+        for (String categoryName : ((String) item.get("categoryName")).trim().split(">")) {
+            if (categoryName.equals("국내도서")) {
+                continue;
+            }
+            if (depth >= 2) {
+                break;
+            }
+
+            Optional<Category> optionalCategory = categoryRepository.findByCategoryNameAndParentCategory(
+                categoryName, parentCategory);
+            if (optionalCategory.isEmpty()) {
+                throw new CategoryNotFoundException(
+                    "Category '" + categoryName + "' is not found!");
+            }
+
+            parentCategory = optionalCategory.get();
+            depth++;
+        }
+
+        return parentCategory;
+    }
+
+    /**
      * JSON에서 주요 도서 정보를 파싱하여 데이터베이스에 저장한 후 반환
      *
      * @param item       한 개의 도서 데이터를 담고 있는 JSON 객체
@@ -94,7 +129,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
         LocalDateTime pubDate = LocalDate.parse((String) item.get("pubDate"),
             DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
 
-        Book book = bookRepository.save(Book.builder()
+        return bookRepository.save(Book.builder()
             .title((String) item.get("title"))
             .publisher(publisher)
             .description((String) item.get("description"))
@@ -109,8 +144,6 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             .createdAt(LocalDateTime.now())
             .build()
         );
-
-        return book;
     }
 
     /**
@@ -191,7 +224,14 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             JSONObject item = (JSONObject) object;
             Publisher publisher = getPublisher(item);
             BookStatus bookStatus = bookStatusRepository.findByTypeName("ONSALE").get();
+            Category category;
+            try {
+                category = getCategory(item);
+            } catch (CategoryNotFoundException e) {
+                continue;
+            }
             Book book = getBook(item, publisher, bookStatus);
+            bookCategoryRepository.save(new BookCategory(book, category));
             parseAuthor(item, book);
         }
     }
