@@ -13,7 +13,7 @@ spring:
       label: main
 
   datasource:
-    url: jdbc:mysql://localhost:3306/[database name]
+    url: jdbc:mysql://localhost:3306/55g_shop
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: [username]
-    password: [password]
+    username: root
+    password: 201800878
