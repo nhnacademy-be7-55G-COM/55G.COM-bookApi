@@ -46,4 +46,5 @@ public class Book {
     private int stock;
     private long views;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

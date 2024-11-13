@@ -149,6 +149,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             .views(0)
             .bookStatus(bookStatus)
             .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build()
         );
     }
