@@ -149,6 +149,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             .views(0)
             .bookStatus(bookStatus)
             .createdAt(LocalDateTime.now())
+            .updatedAt(LocalDateTime.now())
             .build()
         );
     }
@@ -229,6 +230,12 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
 
         for (Object object : array) {
             JSONObject item = (JSONObject) object;
+
+            // 데이터의 ISBN 값을 사용하여 DB에 저장되어 있으면 저장하지 않고 건너뜀.
+            if(bookRepository.existsByIsbn((String)item.get("isbn"))){
+                continue;
+            }
+
             Publisher publisher = getPublisher(item);
             BookStatus bookStatus = bookStatusRepository.findByTypeName("ONSALE").orElse(null);
             Category category;
