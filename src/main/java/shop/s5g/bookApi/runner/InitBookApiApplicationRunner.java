@@ -141,7 +141,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             .publisher(publisher)
             .description((String) item.get("description"))
             .publishedDate(pubDate)
-            .isbn((String) item.get("isbn"))
+            .isbn((String) item.get("isbn13"))
             .price((Long) item.get("priceStandard"))
             .discountRate(new BigDecimal(0))
             .isPacked(false)
@@ -232,7 +232,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             JSONObject item = (JSONObject) object;
 
             // 데이터의 ISBN 값을 사용하여 DB에 저장되어 있으면 저장하지 않고 건너뜀.
-            if(bookRepository.existsByIsbn((String)item.get("isbn"))){
+            if(bookRepository.existsByIsbn((String)item.get("isbn13"))){
                 continue;
             }
 
