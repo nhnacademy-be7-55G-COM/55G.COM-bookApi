@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,9 +29,14 @@ public class BookCategory {
     @MapsId("categoryId")
     private Category category;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
     public BookCategory(Book book, Category category) {
         this.book = book;
         this.category = category;
         this.bookCategoryId = new BookCategoryPk(book.getBookId(), category.getCategoryId());
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
