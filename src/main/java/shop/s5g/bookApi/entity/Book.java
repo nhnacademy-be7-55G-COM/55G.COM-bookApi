@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class Book {
     private String title;
     private String chapter;
     private String description;
-    private LocalDateTime publishedDate;
+    private LocalDate publishedDate;
     private String isbn;
     private long price;
     private BigDecimal discountRate;

@@ -133,15 +133,15 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
      * @return 데이터베이스에 저장한 도서 정보를 담은 Book 객체
      */
     private Book getBook(JSONObject item, Publisher publisher, BookStatus bookStatus) {
-        LocalDateTime pubDate = LocalDate.parse((String) item.get("pubDate"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+        LocalDate pubDate = LocalDate.parse((String) item.get("pubDate"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         return bookRepository.save(Book.builder()
             .title((String) item.get("title"))
             .publisher(publisher)
             .description((String) item.get("description"))
             .publishedDate(pubDate)
-            .isbn((String) item.get("isbn"))
+            .isbn((String) item.get("isbn13"))
             .price((Long) item.get("priceStandard"))
             .discountRate(new BigDecimal(0))
             .isPacked(false)
@@ -232,7 +232,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             JSONObject item = (JSONObject) object;
 
             // 데이터의 ISBN 값을 사용하여 DB에 저장되어 있으면 저장하지 않고 건너뜀.
-            if(bookRepository.existsByIsbn((String)item.get("isbn"))){
+            if(bookRepository.existsByIsbn((String)item.get("isbn13"))){
                 continue;
             }
 
