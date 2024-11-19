@@ -133,8 +133,8 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
      * @return 데이터베이스에 저장한 도서 정보를 담은 Book 객체
      */
     private Book getBook(JSONObject item, Publisher publisher, BookStatus bookStatus) {
-        LocalDateTime pubDate = LocalDate.parse((String) item.get("pubDate"),
-            DateTimeFormatter.ofPattern("yyyy-MM-dd")).atStartOfDay();
+        LocalDate pubDate = LocalDate.parse((String) item.get("pubDate"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         return bookRepository.save(Book.builder()
             .title((String) item.get("title"))
