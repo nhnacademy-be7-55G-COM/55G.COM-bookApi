@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,9 +33,14 @@ public class BookAuthor {
     @JoinColumn(name = "authorId")
     private Author author;
 
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
     public BookAuthor(Book book,Author author,AuthorType authorType){
         this.book=book;
         this.author=author;
         this.authorType=authorType;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
