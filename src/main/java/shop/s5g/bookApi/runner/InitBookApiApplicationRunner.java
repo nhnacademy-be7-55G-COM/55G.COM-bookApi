@@ -1,5 +1,6 @@
 package shop.s5g.bookApi.runner;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,14 +8,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-
 import lombok.RequiredArgsConstructor;
-
+import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -22,12 +21,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
+import shop.s5g.bookApi.dto.ImageResponseDto;
 import shop.s5g.bookApi.entity.Author;
 import shop.s5g.bookApi.entity.AuthorType;
 import shop.s5g.bookApi.entity.Book;
 import shop.s5g.bookApi.entity.BookAuthor;
 import shop.s5g.bookApi.entity.BookCategory;
+import shop.s5g.bookApi.entity.BookImage;
 import shop.s5g.bookApi.entity.BookStatus;
 import shop.s5g.bookApi.entity.Category;
 import shop.s5g.bookApi.entity.Publisher;
@@ -36,10 +36,14 @@ import shop.s5g.bookApi.repository.AuthorRepository;
 import shop.s5g.bookApi.repository.AuthorTypeRepository;
 import shop.s5g.bookApi.repository.BookAuthorRepository;
 import shop.s5g.bookApi.repository.BookCategoryRepository;
+import shop.s5g.bookApi.repository.BookImageRepository;
 import shop.s5g.bookApi.repository.BookRepository;
 import shop.s5g.bookApi.repository.BookStatusRepository;
 import shop.s5g.bookApi.repository.CategoryRepository;
 import shop.s5g.bookApi.repository.PublisherRepository;
+import shop.s5g.bookApi.service.ImageService;
+import shop.s5g.bookApi.util.ImageUploader;
+import shop.s5g.bookApi.util.MD5HashUtil;
 
 /**
  * 도서와 관련된 기초 데이터를 외부 API(알라딘)에서 받아오는 클래스
@@ -47,6 +51,7 @@ import shop.s5g.bookApi.repository.PublisherRepository;
  * @author Gyubin-Han
  * @version 1.0
  */
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class InitBookApiApplicationRunner implements ApplicationRunner {
@@ -55,6 +60,9 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     //     실행하기 전에 실행 매개변수에 값 설정 필수 (-Dshop.55g.api-key=<URL 값>)
     @Value("${shop.55g.api-key}")
     private String API_URL;
+
+    @Value("${image.thumbnail.path}")
+    private String thumbnailPath;
 
     private final ApplicationContext applicationContext;
 
@@ -66,6 +74,9 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     private final PublisherRepository publisherRepository;
     private final CategoryRepository categoryRepository;
     private final BookCategoryRepository bookCategoryRepository;
+    private final BookImageRepository bookImageRepository;
+
+    private final ImageService imageService;
 
     private RestTemplate restTemplate;
 
@@ -232,7 +243,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             JSONObject item = (JSONObject) object;
 
             // 데이터의 ISBN 값을 사용하여 DB에 저장되어 있으면 저장하지 않고 건너뜀.
-            if(bookRepository.existsByIsbn((String)item.get("isbn13"))){
+            if (bookRepository.existsByIsbn((String) item.get("isbn13"))) {
                 continue;
             }
 
@@ -245,8 +256,32 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
                 continue;
             }
             Book book = getBook(item, publisher, bookStatus);
+            saveBookImage(item, book);
             bookCategoryRepository.save(new BookCategory(book, category));
             parseAuthor(item, book);
+        }
+    }
+
+    private void saveBookImage(JSONObject item, Book book) {
+        String imageUrl = (String) item.get("cover");
+        String[] parsingImageUrl = imageUrl.split("/");
+        String[] imagePaths = parsingImageUrl[parsingImageUrl.length - 1].split("\\.");
+
+        try {
+            // nhn cloud에 이미지 저장
+            byte[] imageBytes = ImageUploader.downloadImageAsByte(imageUrl);
+            String hashFileName = MD5HashUtil.toMD5Hash(imagePaths[0]);
+
+            String hashImagePath = thumbnailPath + hashFileName + "." + imagePaths[1];
+
+            ImageResponseDto response = imageService.uploadImage(hashImagePath, imageBytes);
+
+            // db에 이미지 저장
+            BookImage bookImage = new BookImage(book, response.fileName());
+            bookImageRepository.save(bookImage);
+
+        } catch (IOException e) {
+            log.error("image 변환 에러");
         }
     }
 
