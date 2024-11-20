@@ -13,7 +13,33 @@ spring:
       label: main
 
   datasource:
-    url: jdbc:mysql://localhost:3306/[database name]
+    url: jdbc:mysql://localhost:3306/[database_name]
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: [username]
-    password: [password]
+    username: [ username ]
+    password: [ password ]
+
+image:
+  url: url
+  appkey: appkey
+  secretKey: secretKey
+  thumbnail:
+    path: "/55gshop/local/thumbnails/"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+image:
+  thumbnail:
+    path: "/55gshop/book/thumbnails/"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
+image:
+  thumbnail:
+    path: "/55gshop/live/thumbnails/"
