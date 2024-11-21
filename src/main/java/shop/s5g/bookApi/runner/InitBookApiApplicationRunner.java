@@ -263,7 +263,8 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
     }
 
     private void saveBookImage(JSONObject item, Book book) {
-        String imageUrl = (String) item.get("cover");
+        String imageUrl = ((String) item.get("cover")).replace("cover200", "cover500");
+
         String[] parsingImageUrl = imageUrl.split("/");
         String[] imagePaths = parsingImageUrl[parsingImageUrl.length - 1].split("\\.");
 
