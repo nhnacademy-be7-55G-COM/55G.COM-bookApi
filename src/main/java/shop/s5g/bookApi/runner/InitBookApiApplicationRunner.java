@@ -158,6 +158,7 @@ public class InitBookApiApplicationRunner implements ApplicationRunner {
             .isPacked(false)
             .stock(100)
             .views(0)
+            .likeCount(0)
             .bookStatus(bookStatus)
             .createdAt(LocalDateTime.now())
             .updatedAt(LocalDateTime.now())

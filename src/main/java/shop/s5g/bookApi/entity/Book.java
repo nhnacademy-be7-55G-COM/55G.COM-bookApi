@@ -7,11 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +44,7 @@ public class Book {
     private boolean isPacked;
     private int stock;
     private long views;
+    private long likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
